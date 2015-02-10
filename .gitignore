@@ -1,2 +1,3 @@
 config.core.php
-build.config.php
+_build/build.config.php
+.idea
