@@ -1,5 +1,6 @@
 Doodles.grid.Doodles = function(config) {
     config = config || {};
+
     Ext.applyIf(config,{
         id: 'doodles-grid-doodles'
         ,url: Doodles.config.connectorUrl
@@ -29,6 +30,37 @@ Doodles.grid.Doodles = function(config) {
             ,width: 350
             ,editor: { xtype: 'textfield' }
         }],tbar:[{
+            text: _('doodles.doodle_create')
+            ,handler: { xtype: 'doodles-window-doodle-create' ,blankValues: true }
+        },{
+            xtype: 'tbtext'
+            ,itemId: 'recordNumberItem'
+            ,text: 'Loading...'
+            ,style: 'color:red; font-size:20px;'
+            ,listeners: {
+                render:  {fn: function(store) {
+                    store.on('load', function(store, records, options){
+                        //store is loaded, now you can work with it's records, etc.
+                        console.info('store load, arguments:', arguments);
+                        console.info('Store count = ', records.length);
+                    })}}
+
+
+                    //store.on('load', function () {
+                        //alert(store.length);
+                        //tbar.getCmp('numRecords').setText('Hide');
+
+                    //});
+                }
+                /*,'render': {fn: function(store) {
+                    store.on('load', function(records) {
+                        var count = records.length; //or store.getTotalCount(), if that's what you want
+                        console.log('hello');
+                        grid.down('#numRecords').setText('Number of Records: ' + count);
+                    });
+                }}*/
+
+        },'->',{
             xtype: 'textfield'
             ,id: 'doodles-search-filter'
             ,emptyText: _('doodles.search...')
@@ -47,8 +79,12 @@ Doodles.grid.Doodles = function(config) {
                 },scope:this}
             }
         },{
-            text: _('doodles.doodle_create')
-            ,handler: { xtype: 'doodles-window-doodle-create' ,blankValues: true }
+            xtype: 'button'
+            ,id: 'modx-artworks-filter-clear'
+            ,text: _('filter_clear')
+            ,listeners: {
+                'click': {fn: this.clearFilter, scope: this}
+            }
         }]
         ,getMenu: function() {
             return [{
@@ -63,14 +99,21 @@ Doodles.grid.Doodles = function(config) {
     });
     Doodles.grid.Doodles.superclass.constructor.call(this,config)
 };
-Ext.extend(Doodles.grid.Doodles,MODx.grid.Grid,{
-    search: function(tf,nv,ov) {
+Ext.extend(Doodles.grid.Doodles,MODx.grid.Grid, {
+    search: function (tf, nv, ov) {
         var s = this.getStore();
         s.baseParams.query = tf.getValue();
         this.getBottomToolbar().changePage(1);
         this.refresh();
-    }
-    ,updateDoodle: function(btn,e) {
+    }, clearFilter: function () {
+        this.getStore().baseParams = {
+            action: 'mgr/doodle/getList'
+            //,'competitionId': this.config.competitionId
+        };
+        Ext.getCmp('doodles-search-filter').reset();
+        this.getBottomToolbar().changePage(1);
+        this.refresh();
+    },updateDoodle: function(btn,e) {
         if (!this.updateDoodleWindow) {
             this.updateDoodleWindow = MODx.load({
                 xtype: 'doodles-window-doodle-update'
@@ -97,6 +140,7 @@ Ext.extend(Doodles.grid.Doodles,MODx.grid.Grid,{
             }
         });
     }
+
 });
 Ext.reg('doodles-grid-doodles',Doodles.grid.Doodles);
 
