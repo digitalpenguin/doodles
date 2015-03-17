@@ -12,6 +12,25 @@ Doodles.grid.Doodles = function(config) {
         ,autoExpandColumn: 'name'
         ,save_action: 'mgr/doodle/updateFromGrid'
         ,autosave: true
+        ,listeners: {
+            render: function() {
+                if (this.store.getCount() == 0) {
+                    // If it is still pending attach a listener to load
+                    // event for a single time to handle the selection
+                    // after the store has been loaded
+                    console.log('store not loaded yet');
+                    this.store.on('load', function() {
+                        console.log('load after render');
+                        Ext.getCmp('recNum').update(this.store.getCount());
+                    }, this, {
+                        single: true
+                    });
+                } else {
+                    console.log('store already loaded');
+
+                }
+            }
+        }
         ,columns: [{
             header: _('id')
             ,dataIndex: 'id'
@@ -34,32 +53,10 @@ Doodles.grid.Doodles = function(config) {
             ,handler: { xtype: 'doodles-window-doodle-create' ,blankValues: true }
         },{
             xtype: 'tbtext'
+            ,id: 'recNum'
             ,itemId: 'recordNumberItem'
             ,text: 'Loading...'
             ,style: 'color:red; font-size:20px;'
-            ,listeners: {
-                render:  {fn: function(store) {
-                    store.on('load', function(store, records, options){
-                        //store is loaded, now you can work with it's records, etc.
-                        console.info('store load, arguments:', arguments);
-                        console.info('Store count = ', records.length);
-                    })}}
-
-
-                    //store.on('load', function () {
-                        //alert(store.length);
-                        //tbar.getCmp('numRecords').setText('Hide');
-
-                    //});
-                }
-                /*,'render': {fn: function(store) {
-                    store.on('load', function(records) {
-                        var count = records.length; //or store.getTotalCount(), if that's what you want
-                        console.log('hello');
-                        grid.down('#numRecords').setText('Number of Records: ' + count);
-                    });
-                }}*/
-
         },'->',{
             xtype: 'textfield'
             ,id: 'doodles-search-filter'
@@ -96,11 +93,17 @@ Doodles.grid.Doodles = function(config) {
             }];
 
         }
+
     });
-    Doodles.grid.Doodles.superclass.constructor.call(this,config)
+    Doodles.grid.Doodles.superclass.constructor.call(this,config);
 };
 Ext.extend(Doodles.grid.Doodles,MODx.grid.Grid, {
-    search: function (tf, nv, ov) {
+    loadRecordText: function() {
+        alert('loaded');
+        /*this.getStore().on( 'click', function( store, records, options ) {
+            alert( 'succesfully loaded' );
+        } );*/
+    },search: function (tf, nv, ov) {
         var s = this.getStore();
         s.baseParams.query = tf.getValue();
         this.getBottomToolbar().changePage(1);
