@@ -15,13 +15,10 @@ Doodles.grid.Doodles = function(config) {
         ,listeners: {
             render: function() {
                 if (this.store.getCount() == 0) {
-                    // If it is still pending attach a listener to load
-                    // event for a single time to handle the selection
-                    // after the store has been loaded
                     console.log('store not loaded yet');
                     this.store.on('load', function() {
                         console.log('load after render');
-                        Ext.getCmp('recNum').update(this.store.getCount());
+                        Ext.getCmp('recNum').update('Records: '+this.store.getCount());
                     }, this, {
                         single: true
                     });
@@ -54,7 +51,6 @@ Doodles.grid.Doodles = function(config) {
         },{
             xtype: 'tbtext'
             ,id: 'recNum'
-            ,itemId: 'recordNumberItem'
             ,text: 'Loading...'
             ,style: 'color:red; font-size:20px;'
         },'->',{
@@ -77,7 +73,7 @@ Doodles.grid.Doodles = function(config) {
             }
         },{
             xtype: 'button'
-            ,id: 'modx-artworks-filter-clear'
+            ,id: 'doodles-filter-clear'
             ,text: _('filter_clear')
             ,listeners: {
                 'click': {fn: this.clearFilter, scope: this}
@@ -98,12 +94,7 @@ Doodles.grid.Doodles = function(config) {
     Doodles.grid.Doodles.superclass.constructor.call(this,config);
 };
 Ext.extend(Doodles.grid.Doodles,MODx.grid.Grid, {
-    loadRecordText: function() {
-        alert('loaded');
-        /*this.getStore().on( 'click', function( store, records, options ) {
-            alert( 'succesfully loaded' );
-        } );*/
-    },search: function (tf, nv, ov) {
+    search: function (tf, nv, ov) {
         var s = this.getStore();
         s.baseParams.query = tf.getValue();
         this.getBottomToolbar().changePage(1);
@@ -111,7 +102,6 @@ Ext.extend(Doodles.grid.Doodles,MODx.grid.Grid, {
     }, clearFilter: function () {
         this.getStore().baseParams = {
             action: 'mgr/doodle/getList'
-            //,'competitionId': this.config.competitionId
         };
         Ext.getCmp('doodles-search-filter').reset();
         this.getBottomToolbar().changePage(1);
