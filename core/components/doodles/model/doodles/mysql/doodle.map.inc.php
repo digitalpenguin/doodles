@@ -8,6 +8,7 @@ $xpdo_meta_map['Doodle']= array (
   array (
     'name' => '',
     'description' => '',
+    'filename' => '',
     'createdon' => NULL,
     'createdby' => 0,
     'editedon' => NULL,
@@ -28,6 +29,14 @@ $xpdo_meta_map['Doodle']= array (
       'dbtype' => 'text',
       'phptype' => 'string',
       'null' => false,
+      'default' => '',
+    ),
+    'filename' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '50',
+      'phptype' => 'string',
+      'null' => true,
       'default' => '',
     ),
     'createdon' => 

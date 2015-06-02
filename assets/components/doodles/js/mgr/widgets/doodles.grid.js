@@ -175,6 +175,7 @@ Doodles.window.CreateDoodle = function(config) {
         ,baseParams: {
             action: 'mgr/doodle/create'
         }
+        ,fileUpload : true
         ,fields: [{
             xtype: 'textfield'
             ,fieldLabel: _('doodles.name')
@@ -184,6 +185,12 @@ Doodles.window.CreateDoodle = function(config) {
             xtype: 'textarea'
             ,fieldLabel: _('doodles.description')
             ,name: 'description'
+            ,anchor: '100%'
+        },{
+            xtype: 'fileuploadfield'
+            ,fieldLabel: 'Select a File to Upload'
+            ,emptyText: 'Select an image'
+            ,name: 'filename'
             ,anchor: '100%'
         }]
     });
