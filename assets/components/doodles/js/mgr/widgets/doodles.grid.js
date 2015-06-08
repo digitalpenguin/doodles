@@ -16,7 +16,6 @@ Doodles.grid.Doodles = function(config) {
             render: function() {
                 if (this.store.getCount() == 0) {
                     console.log('store not loaded yet');
-
                     this.store.on('load', function() {
                         console.log('load after render');
                         Ext.getCmp('recNum').update('Records: '+this.store.getCount());
@@ -25,6 +24,7 @@ Doodles.grid.Doodles = function(config) {
                     });
                 } else {
                     console.log('store already loaded');
+
                 }
             }
         }
@@ -99,7 +99,7 @@ Ext.extend(Doodles.grid.Doodles,MODx.grid.Grid, {
         s.baseParams.query = tf.getValue();
         this.getBottomToolbar().changePage(1);
         this.refresh();
-    },clearFilter: function () {
+    }, clearFilter: function () {
         this.getStore().baseParams = {
             action: 'mgr/doodle/getList'
         };
@@ -131,10 +131,9 @@ Ext.extend(Doodles.grid.Doodles,MODx.grid.Grid, {
             ,listeners: {
                 'success': {fn:function() {
                     this.refresh();
-                    Ext.getCmp('doodles-grid-doodles').store.on('load', function() {
+                    this.store.on('load', function() {
                         Ext.getCmp('recNum').update('Records: '+Ext.getCmp('doodles-grid-doodles').store.getCount());
                     });
-
                 },scope:this}
             }
         });
@@ -181,7 +180,6 @@ Doodles.window.CreateDoodle = function(config) {
         ,baseParams: {
             action: 'mgr/doodle/create'
         }
-        ,fileUpload : true
         ,fields: [{
             xtype: 'textfield'
             ,fieldLabel: _('doodles.name')
@@ -191,12 +189,6 @@ Doodles.window.CreateDoodle = function(config) {
             xtype: 'textarea'
             ,fieldLabel: _('doodles.description')
             ,name: 'description'
-            ,anchor: '100%'
-        },{
-            xtype: 'fileuploadfield'
-            ,fieldLabel: 'Select a File to Upload'
-            ,emptyText: 'Select an image'
-            ,name: 'filename'
             ,anchor: '100%'
         }]
     });
