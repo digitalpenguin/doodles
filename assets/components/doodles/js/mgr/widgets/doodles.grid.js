@@ -47,7 +47,7 @@ Doodles.grid.Doodles = function(config) {
             ,editor: { xtype: 'textfield' }
         }],tbar:[{
             text: _('doodles.doodle_create')
-            ,handler: { xtype: 'doodles-window-doodle-create' ,blankValues: true }
+            ,handler: this.createDoodle
         },{
             xtype: 'tbtext'
             ,id: 'recNum'
@@ -106,6 +106,22 @@ Ext.extend(Doodles.grid.Doodles,MODx.grid.Grid, {
         Ext.getCmp('doodles-search-filter').reset();
         this.getBottomToolbar().changePage(1);
         this.refresh();
+    },createDoodle: function(btn,e) {
+        if (!this.createDoodleWindow) {
+            this.createDoodleWindow = MODx.load({
+                xtype: 'doodles-window-doodle-create'
+                ,blankValues: true
+                ,listeners: {
+                    'success': {fn:function() {
+                        this.refresh();
+                        this.store.on('load', function() {
+                            Ext.getCmp('recNum').update('Records: '+Ext.getCmp('doodles-grid-doodles').store.getCount());
+                        });
+                    },scope:this}
+                }
+            });
+        }
+        this.createDoodleWindow.show(e.target);
     },updateDoodle: function(btn,e) {
         if (!this.updateDoodleWindow) {
             this.updateDoodleWindow = MODx.load({
@@ -118,8 +134,7 @@ Ext.extend(Doodles.grid.Doodles,MODx.grid.Grid, {
         }
         this.updateDoodleWindow.setValues(this.menu.record);
         this.updateDoodleWindow.show(e.target);
-    }
-    ,removeDoodle: function() {
+    },removeDoodle: function() {
         MODx.msg.confirm({
             title: _('doodles.doodle_remove')
             ,text: _('doodles.doodle_remove_confirm')
