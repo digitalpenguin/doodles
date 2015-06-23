@@ -7,6 +7,7 @@ class Doodles {
 
         $basePath = $this->modx->getOption('doodles.core_path',$config,$this->modx->getOption('core_path').'components/doodles/');
         $assetsUrl = $this->modx->getOption('doodles.assets_url',$config,$this->modx->getOption('assets_url').'components/doodles/');
+        $uploadUrl = $this->modx->getOption('doodles.upload_url',$config,$this->modx->getOption('assets_url').'components/doodles/uploads/');
         $this->config = array_merge(array(
             'basePath' => $basePath,
             'corePath' => $basePath,
@@ -17,6 +18,7 @@ class Doodles {
             'jsUrl' => $assetsUrl.'js/',
             'cssUrl' => $assetsUrl.'css/',
             'assetsUrl' => $assetsUrl,
+            'uploadUrl' => $uploadUrl,
             'connectorUrl' => $assetsUrl.'connector.php',
         ),$config);
         $this->modx->addPackage('doodles',$this->config['modelPath']);

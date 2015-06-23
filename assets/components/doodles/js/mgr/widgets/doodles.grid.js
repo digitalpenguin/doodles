@@ -5,7 +5,7 @@ Doodles.grid.Doodles = function(config) {
         id: 'doodles-grid-doodles'
         ,url: Doodles.config.connectorUrl
         ,baseParams: { action: 'mgr/doodle/getList' }
-        ,fields: ['id','name','description','menu']
+        ,fields: ['filename','id','name','description','menu']
         ,paging: true
         ,remoteSort: true
         ,anchor: '97%'
@@ -29,6 +29,14 @@ Doodles.grid.Doodles = function(config) {
             }
         }
         ,columns: [{
+            header: _('doodles.image')
+            ,dataIndex: 'filename'
+            ,sortable: false
+            ,width:200
+            ,renderer: function(value, metaData, record){
+                return '<img src="' + MODx.config.site_url + MODx.config['doodles.upload_url'] + value + '">';
+            }
+        },{
             header: _('id')
             ,dataIndex: 'id'
             ,sortable: true
@@ -43,7 +51,7 @@ Doodles.grid.Doodles = function(config) {
             header: _('doodles.description')
             ,dataIndex: 'description'
             ,sortable: false
-            ,width: 350
+            ,width: 200
             ,editor: { xtype: 'textfield' }
         }],tbar:[{
             text: _('doodles.doodle_create')
@@ -195,6 +203,7 @@ Doodles.window.CreateDoodle = function(config) {
         ,baseParams: {
             action: 'mgr/doodle/create'
         }
+        ,fileUpload: true
         ,fields: [{
             xtype: 'textfield'
             ,fieldLabel: _('doodles.name')
@@ -205,6 +214,11 @@ Doodles.window.CreateDoodle = function(config) {
             ,fieldLabel: _('doodles.description')
             ,name: 'description'
             ,anchor: '100%'
+        },{
+            xtype: 'fileuploadfield'
+            ,fieldLabel: _('doodles.file_upload')
+            ,name: 'filename'
+            ,emptyText: _('doodles.select_image')
         }]
     });
     Doodles.window.CreateDoodle.superclass.constructor.call(this,config);
